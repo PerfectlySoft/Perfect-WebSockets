@@ -1,6 +1,6 @@
 import XCTest
-@testable import Perfect-WebSocketsTestSuite
+@testable import PerfectWebSocketsTestSuite
 
 XCTMain([
-     testCase(Perfect-WebSocketsTests.allTests),
+     testCase(PerfectWebSocketsTests.allTests),
 ])
