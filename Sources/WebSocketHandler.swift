@@ -296,7 +296,7 @@ public struct WebSocketHandler {
 			let connection = request.header(.connection),
             let secWebSocketKey = request.header(.custom(name: "sec-websocket-key")),
 			let secWebSocketVersion = request.header(.custom(name: "sec-websocket-version"))
-			where upgrade.lowercased() == "websocket" && connection.lowercased().contains(string: "upgrade") else {
+			, upgrade.lowercased() == "websocket" && connection.lowercased().contains(string: "upgrade") else {
 
 				response.status = .badRequest
 				return response.completed()
@@ -371,8 +371,8 @@ public struct WebSocketHandler {
 
 extension String.UTF8View {
 	var sha1: [UInt8] {
-		let bytes = UnsafeMutablePointer<UInt8>(allocatingCapacity:  Int(SHA_DIGEST_LENGTH))
-		defer { bytes.deallocateCapacity(Int(SHA_DIGEST_LENGTH)) }
+		let bytes = UnsafeMutablePointer<UInt8>.allocate(capacity: Int(SHA_DIGEST_LENGTH))
+		defer { bytes.deallocate(capacity: Int(SHA_DIGEST_LENGTH)) }
 
 		SHA1(Array<UInt8>(self), (self.count), bytes)
 
