@@ -141,7 +141,7 @@ public class WebSocket {
 		return nil
 	}
 
-	func fillBuffer(demand demnd: Int, completion: (Bool) -> ()) {
+	func fillBuffer(demand demnd: Int, completion: @escaping (Bool) -> ()) {
 		self.socket.readBytesFully(count: demnd, timeoutSeconds: self.readTimeoutSeconds) {
 			[weak self] (b:[UInt8]?) -> () in
 			if let b = b {
@@ -151,7 +151,7 @@ public class WebSocket {
 		}
 	}
 
-	func fillBufferSome(suggestion suggest: Int, completion: () -> ()) {
+	func fillBufferSome(suggestion suggest: Int, completion: @escaping () -> ()) {
 		self.socket.readSomeBytes(count: suggest) {
 			[weak self] (b:[UInt8]?) -> () in
 			if let b = b {
@@ -161,7 +161,7 @@ public class WebSocket {
 		}
 	}
 
-	private func readFrame(completion comp: (Frame?) -> ()) {
+	private func readFrame(completion comp: @escaping (Frame?) -> ()) {
 		if let frame = self.fillFrame() {
 			switch frame.opCode {
 			// check for and handle ping/pong
@@ -190,43 +190,43 @@ public class WebSocket {
 	}
 
 	/// Read string data from the client.
-	public func readStringMessage(continuation: (String?, opcode: OpcodeType, final: Bool) -> ()) {
+	public func readStringMessage(continuation: @escaping (String?, _ opcode: OpcodeType, _ final: Bool) -> ()) {
 		self.readFrame {
 			frame in
-			continuation(frame?.stringPayload, opcode: frame?.opCode ?? .invalid, final: frame?.fin ?? true)
+			continuation(frame?.stringPayload, frame?.opCode ?? .invalid, frame?.fin ?? true)
 		}
 	}
 
 	/// Read binary data from the client.
-	public func readBytesMessage(continuation: ([UInt8]?, opcode: OpcodeType, final: Bool) -> ()) {
+	public func readBytesMessage(continuation: @escaping ([UInt8]?, _ opcode: OpcodeType, _ final: Bool) -> ()) {
 		self.readFrame {
 			frame in
-			continuation(frame?.bytesPayload, opcode: frame?.opCode ?? .invalid, final: frame?.fin ?? true)
+			continuation(frame?.bytesPayload, frame?.opCode ?? .invalid, frame?.fin ?? true)
 		}
 	}
 
 	/// Send binary data to thew client.
-	public func sendBinaryMessage(bytes: [UInt8], final: Bool, completion: () -> ()) {
+	public func sendBinaryMessage(bytes: [UInt8], final: Bool, completion: @escaping () -> ()) {
 		self.sendMessage(opcode: .binary, bytes: bytes, final: final, completion: completion)
 	}
 
 	/// Send string data to the client.
-	public func sendStringMessage(string: String, final: Bool, completion: () -> ()) {
+	public func sendStringMessage(string: String, final: Bool, completion: @escaping () -> ()) {
 		self.sendMessage(opcode: .text, bytes: UTF8Encoding.decode(string: string), final: final, completion: completion)
 	}
 
 	/// Send a "pong" message to the client.
-	public func sendPong(completion: () -> ()) {
+	public func sendPong(completion: @escaping () -> ()) {
 		self.sendMessage(opcode: .pong, bytes: [UInt8](), final: true, completion: completion)
 	}
 
 	/// Send a "ping" message to the client.
 	/// Expect a "pong" message to follow.
-	public func sendPing(completion: () -> ()) {
+	public func sendPing(completion: @escaping () -> ()) {
 		self.sendMessage(opcode: .ping, bytes: [UInt8](), final: true, completion: completion)
 	}
 
-	private func sendMessage(opcode op: OpcodeType, bytes: [UInt8], final: Bool, completion: () -> ()) {
+	private func sendMessage(opcode op: OpcodeType, bytes: [UInt8], final: Bool, completion: @escaping () -> ()) {
 		let sendBuffer = Bytes()
 
 		let byte1 = UInt8(final ? 0x80 : 0x0) | (self.nextIsContinuation ? 0 : op.rawValue)
@@ -280,7 +280,7 @@ private let webSocketGUID = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"
 public struct WebSocketHandler {
 
     /// Function which produces a WebSocketSessionHandler
-	public typealias HandlerProducer = (request: HTTPRequest, protocols: [String]) -> WebSocketSessionHandler?
+	public typealias HandlerProducer = (_ request: HTTPRequest, _ protocols: [String]) -> WebSocketSessionHandler?
 
 	private let handlerProducer: HandlerProducer
 
@@ -319,7 +319,7 @@ public struct WebSocketHandler {
 			return s.characters.count > 0 ? s : nil
 		}
 
-		guard let handler = self.handlerProducer(request: request, protocols: protocolList) else {
+		guard let handler = self.handlerProducer(request, protocolList) else {
 			response.status = .badRequest
 			response.appendBody(string: "WebSocket protocols not supported.")
 			response.completed()
@@ -352,7 +352,7 @@ public struct WebSocketHandler {
 		BIO_write(bio, a, Int32(a.count))
 		BIO_ctrl(bio, BIO_CTRL_FLUSH, 0, nil)
 
-		var mem = UnsafeMutablePointer<BUF_MEM>(nil)
+		var mem = UnsafeMutablePointer<BUF_MEM>(nil as OpaquePointer?)
 		BIO_ctrl(bio, BIO_C_GET_BUF_MEM_PTR, 0, &mem)
 		BIO_ctrl(bio, BIO_CTRL_SET_CLOSE, Int(BIO_NOCLOSE), nil)
 		BIO_free_all(bio)
@@ -360,7 +360,7 @@ public struct WebSocketHandler {
 		guard let amem = mem else {
 			return ""
 		}
-		guard let txt = UnsafeMutablePointer<UInt8>(amem.pointee.data) else {
+		guard let txt = UnsafeMutableRawPointer(amem.pointee.data)?.assumingMemoryBound(to: UInt8.self) else {
 			return ""
 		}
 		let ret = UTF8Encoding.encode(generator: GenerateFromPointer(from: txt, count: amem.pointee.length))
