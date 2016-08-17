@@ -1,5 +1,5 @@
 import XCTest
-@testable import PerfectWebSocketsTestSuite
+@testable import PerfectWebSocketsTests
 
 XCTMain([
      testCase(PerfectWebSocketsTests.allTests),
