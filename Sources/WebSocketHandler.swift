@@ -25,6 +25,8 @@ import PerfectHTTP
 import SwiftGlibc
 import LinuxBridge
 private let UINT16_MAX = UInt(0xFFFF)
+#else
+import Darwin
 #endif
 
 import OpenSSL
