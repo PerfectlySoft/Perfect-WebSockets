@@ -287,7 +287,7 @@ public struct WebSocketHandler {
 	private let handlerProducer: HandlerProducer
 
     /// Initialize WebSocketHandler with a handler producer function
-	public init(handlerProducer: HandlerProducer) {
+	public init(handlerProducer: @escaping HandlerProducer) {
 		self.handlerProducer = handlerProducer
 	}
 
