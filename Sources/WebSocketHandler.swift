@@ -29,7 +29,7 @@ private let UINT16_MAX = UInt(0xFFFF)
 import Darwin
 #endif
 
-import OpenSSL
+import COpenSSL
 
 private let smallPayloadSize = 126
 
