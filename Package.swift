@@ -19,7 +19,6 @@
 
 import PackageDescription
 
-let versions = Version(0,0,0)..<Version(10,0,0)
 let urls = [
     "https://github.com/PerfectlySoft/Perfect-HTTP.git"
 ]
@@ -27,5 +26,5 @@ let urls = [
 let package = Package(
     name: "PerfectWebSockets",
     targets: [],
-    dependencies: urls.map { .Package(url: $0, versions: versions) }
+    dependencies: urls.map { .Package(url: $0, majorVersion: 2, minor: 0) }
 )
