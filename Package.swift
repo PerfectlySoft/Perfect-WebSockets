@@ -26,5 +26,5 @@ let urls = [
 let package = Package(
     name: "PerfectWebSockets",
     targets: [],
-    dependencies: urls.map { .Package(url: $0, majorVersion: 2, minor: 0) }
+    dependencies: urls.map { .Package(url: $0, majorVersion: 2) }
 )
