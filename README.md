@@ -59,10 +59,10 @@ Add this project as a dependency in your Package.swift file.
 .Package(url:"https://github.com/PerfectlySoft/Perfect-WebSockets.git", majorVersion: 2)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Usage
+Example Usage
 --------
 
-[PerfectExample-WebSocketsServer](https://github.com/PerfectlySoft/PerfectExample-WebSocketsServer)
+[PerfectExample-WebSocketsServer](https://github.com/PerfectExamples/Perfect-WebSocketsServer)
 
 
 
