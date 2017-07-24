@@ -34,7 +34,7 @@ import COpenSSL
 private let smallPayloadSize = 126
 
 /// This class represents the communications channel for a WebSocket session.
-public class WebSocket {
+public class WebSocket: Equatable {
 
 	/// The various types of WebSocket messages.
 	public enum OpcodeType: UInt8 {
@@ -260,6 +260,11 @@ public class WebSocket {
 			_ in
 			completion()
 		}
+	}
+
+	/// implement Equatable protocol
+	public static func == (lhs: WebSocket, rhs: WebSocket) -> Bool {
+		return lhs.socket == rhs.socket
 	}
 }
 
