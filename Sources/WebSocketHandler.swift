@@ -70,6 +70,9 @@ public class WebSocket: Equatable {
 	/// The read timeout, in seconds. By default this is -1, which means no timeout.
 	public var readTimeoutSeconds: Double = NetEvent.noTimeout
 	
+	/// The socket message handler for read event.
+	public var onMessageHandler: ((Any?, _ opcode: OpcodeType, _ final: Bool) -> ())?
+
     /// Indicates if the socket is still likely connected or if it has been closed.
 	public var isConnected: Bool { return self.socket.isValid }
     private let socket: NetTCP
@@ -78,6 +81,10 @@ public class WebSocket: Equatable {
 
     init(socket: NetTCP) {
 		self.socket = socket
+		self.onMessageHandler = nil
+		
+		/// Start reading message immediately while the socket has been initialized.
+		self.readMessage()	
 	}
 
 	/// Close the connection.
@@ -191,19 +198,21 @@ public class WebSocket: Equatable {
         }
 	}
 
-	/// Read string data from the client.
-	public func readStringMessage(continuation: @escaping (String?, _ opcode: OpcodeType, _ final: Bool) -> ()) {
-		self.readFrame {
-			frame in
-			continuation(frame?.stringPayload, frame?.opCode ?? .invalid, frame?.fin ?? true)
+	/// Read message from the client with an infinite way.
+	private func readMessage() {
+		if !self.socket.isValid {
+			return
 		}
-	}
-
-	/// Read binary data from the client.
-	public func readBytesMessage(continuation: @escaping ([UInt8]?, _ opcode: OpcodeType, _ final: Bool) -> ()) {
+		
 		self.readFrame {
 			frame in
-			continuation(frame?.bytesPayload, frame?.opCode ?? .invalid, frame?.fin ?? true)
+			if frame?.opCode == .text {
+				self.onMessageHandler?(frame?.stringPayload, frame?.opCode ?? .invalid, frame?.fin ?? true)
+			} else {
+				self.onMessageHandler?(frame?.bytesPayload, frame?.opCode ?? .invalid, frame?.fin ?? true)
+			}
+			
+			self.readMessage()
 		}
 	}
 
