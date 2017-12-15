@@ -317,13 +317,13 @@ public struct WebSocketHandler {
 		}
 
 		let secWebSocketProtocol = request.header(.custom(name: "sec-websocket-protocol")) ?? ""
-		let protocolList = secWebSocketProtocol.characters.split(separator: ",").flatMap {
+		let protocolList = secWebSocketProtocol.split(separator: ",").flatMap {
 			i -> String? in
 			var s = String(i)
-			while s.characters.count > 0 && s.characters[s.characters.startIndex] == " " {
+			while s.count > 0 && s[s.startIndex] == " " {
 				s.remove(at: s.startIndex)
 			}
-			return s.characters.count > 0 ? s : nil
+			return s.count > 0 ? s : nil
 		}
 
 		guard let handler = self.handlerProducer(request, protocolList) else {
