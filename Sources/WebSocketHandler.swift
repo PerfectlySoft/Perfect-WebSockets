@@ -332,7 +332,7 @@ public struct WebSocketHandler {
 			response.completed()
 			return
 		}
-
+		request.scratchPad["no-compression"] = true
 		response.status = .switchingProtocols
 		response.addHeader(.upgrade, value: "websocket")
 		response.addHeader(.connection, value: "Upgrade")
