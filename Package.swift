@@ -1,11 +1,19 @@
+// swift-tools-version:4.0
+// The swift-tools-version declares the minimum version of Swift required to build this package.
+
 // Generated automatically by Perfect Assistant Application
 // Date: 2017-09-20 18:45:32 +0000
 import PackageDescription
 let package = Package(
 	name: "PerfectWebSockets",
-	targets: [],
-	dependencies: [
-		.Package(url: "https://github.com/PerfectlySoft/Perfect-HTTP.git", majorVersion: 3),
-		.Package(url: "https://github.com/PerfectlySoft/Perfect-Crypto.git", majorVersion: 3),
-	]
+    products: [
+        .library(name: "PerfectWebSockets", targets: ["PerfectWebSockets"])
+    ],
+    dependencies: [
+        .package(url: "https://github.com/PerfectlySoft/Perfect-HTTP.git", from: "3.0.0"),
+        .package(url: "https://github.com/PerfectlySoft/Perfect-Crypto.git", from: "3.0.0"),
+    ],
+	targets: [
+        .target(name: "PerfectWebSockets", dependencies: ["PerfectHTTP", "PerfectCrypto"])
+    ]
 )
