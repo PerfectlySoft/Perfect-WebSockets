@@ -317,7 +317,7 @@ public struct WebSocketHandler {
 		}
 
 		let secWebSocketProtocol = request.header(.custom(name: "sec-websocket-protocol")) ?? ""
-		let protocolList = secWebSocketProtocol.split(separator: ",").flatMap {
+		let protocolList = secWebSocketProtocol.split(separator: ",").compactMap {
 			i -> String? in
 			var s = String(i)
 			while s.count > 0 && s[s.startIndex] == " " {
@@ -379,7 +379,7 @@ public struct WebSocketHandler {
 extension String.UTF8View {
 	var sha1: [UInt8] {
 		let bytes = UnsafeMutablePointer<UInt8>.allocate(capacity: Int(SHA_DIGEST_LENGTH))
-		defer { bytes.deallocate(capacity: Int(SHA_DIGEST_LENGTH)) }
+		defer { bytes.deallocate() }
 
 		SHA1(Array<UInt8>(self), (self.count), bytes)
 
