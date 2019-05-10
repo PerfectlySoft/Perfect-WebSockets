@@ -11,9 +11,8 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/PerfectlySoft/Perfect-HTTP.git", from: "3.0.0"),
-        .package(url: "https://github.com/PerfectlySoft/Perfect-Crypto.git", from: "3.0.0"),
     ],
 	targets: [
-        .target(name: "PerfectWebSockets", dependencies: ["PerfectHTTP", "PerfectCrypto"])
+        .target(name: "PerfectWebSockets", dependencies: ["PerfectHTTP"])
     ]
 )
