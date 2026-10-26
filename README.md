@@ -1,5 +1,13 @@
 # Perfect-WebSockets
 
+> [!IMPORTANT]
+> **This package is no longer maintained.** WebSockets are built into
+> [Perfect-NIO](https://github.com/PerfectlySoft/Perfect-NIO), Perfect's Swift 6 server on SwiftNIO. Declare an endpoint
+> with `webSocket(protocol:options:_:)` and drive it with async `readMessage()`/`writeMessage(_:)`; see its README's
+> "WebSocket" section. Perfect-NIO 0.2.0 and later also limit message size and close clients that go silent.
+> This repository is archived and read-only. Existing tags still resolve, and the documentation below describes the
+> last release for anyone still depending on it.
+
 <p align="center">
     <a href="http://perfect.org/get-involved.html" target="_blank">
         <img src="http://perfect.org/assets/github/perfect_github_2_0_0.jpg" alt="Get Involed with Perfect!" width="854" />
